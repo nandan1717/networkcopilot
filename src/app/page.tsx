@@ -8,7 +8,7 @@ import { Tutorial } from '@/components/Tutorial';
 import { UITour } from '@/components/UITour';
 import { UpdatePassword } from '@/components/UpdatePassword';
 import { supabase } from '@/lib/supabase';
-import { LogOut, User, HelpCircle } from 'lucide-react';
+import { User, HelpCircle } from 'lucide-react';
 
 export default function Home() {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -18,12 +18,15 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+
   // Phase 1: Pre-login modal guide
   const [showGuide, setShowGuide] = useState(false);
   // Phase 2: Post-login UI highlighter
   const [showTour, setShowTour] = useState(false);
   // Phase 3: Password Recovery
   const [isRecoveringPassword, setIsRecoveringPassword] = useState(false);
+
+
 
   useEffect(() => {
     // Check pre-login guide state
@@ -94,16 +97,16 @@ export default function Home() {
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-900/20 blur-[120px] pointer-events-none"></div>
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-800/10 blur-[120px] pointer-events-none"></div>
 
-      <main className="max-w-5xl mx-auto px-6 py-20 md:py-32 relative z-10 flex flex-col items-center">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16 md:py-32 relative z-10 flex flex-col items-center safe-top">
         {session && (
-          <div className="absolute top-8 right-6 flex items-center gap-4 z-50">
+          <div className="absolute top-4 sm:top-8 right-4 sm:right-6 flex items-center gap-2 sm:gap-3 z-50">
             <button
               onClick={() => {
                 localStorage.removeItem('guideComplete');
                 localStorage.removeItem('tourComplete');
                 setShowGuide(true);
               }}
-              className="flex items-center gap-2 text-gray-500 hover:text-emerald-400 transition-colors bg-white/5 border border-white/5 hover:bg-white/10 px-4 py-2 rounded-full text-sm font-medium"
+              className="flex items-center gap-1.5 sm:gap-2 text-gray-500 hover:text-emerald-400 transition-colors bg-white/5 border border-white/5 hover:bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium"
             >
               <HelpCircle className="w-4 h-4" />
               Help
@@ -111,30 +114,32 @@ export default function Home() {
             <button
               id="tour-profile-btn"
               onClick={() => setIsProfileOpen(true)}
-              className="flex items-center gap-2 text-gray-500 hover:text-emerald-400 transition-colors bg-white/5 border border-white/5 hover:bg-white/10 px-4 py-2 rounded-full text-sm font-medium"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 shadow-lg shadow-black/20"
             >
-              <User className="w-4 h-4" />
-              Profile
-            </button>
-            <button
-              onClick={() => supabase.auth.signOut()}
-              className="flex items-center gap-2 text-gray-500 hover:text-red-400 transition-colors bg-white/5 border border-white/5 hover:bg-white/10 px-4 py-2 rounded-full text-sm font-medium"
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
+              {profileAvatar ? (
+                <img
+                  src={profileAvatar}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center">
+                  <User className="w-5 h-5 text-white/80" />
+                </div>
+              )}
             </button>
           </div>
         )}
 
-        <header className="mb-16 text-center w-full max-w-3xl border-b border-white/5 pb-12">
-          <div className="inline-flex items-center justify-center gap-2 mb-8 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald-400 text-sm font-medium tracking-wide shadow-lg shadow-emerald-900/20">
+        <header className="mb-8 sm:mb-16 text-center w-full max-w-3xl border-b border-white/5 pb-8 sm:pb-12 pt-14 sm:pt-4">
+          <div className="inline-flex items-center justify-center gap-2 mb-4 sm:mb-8 px-3 sm:px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald-400 text-xs sm:text-sm font-medium tracking-wide shadow-lg shadow-emerald-900/20">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             {session ? (profileName ? `Welcome back, ${profileName}` : 'Welcome AI Networker') : 'Global Networking Hub'}
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 bg-gradient-to-br from-white via-gray-200 to-gray-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-4 sm:mb-8 bg-gradient-to-br from-white via-gray-200 to-gray-500 bg-clip-text text-transparent">
             Networking <span className="text-emerald-500 drop-shadow-lg">Co-Pilot</span>
           </h1>
-          <p className="text-xl text-gray-400 font-light leading-relaxed">
+          <p className="text-sm sm:text-lg md:text-xl text-gray-400 font-light leading-relaxed px-2 sm:px-0">
             Upload your resume or transcript. We'll extract your skills and match you with top professional networking events in your area, complete with custom pitches.
           </p>
         </header>
@@ -157,7 +162,7 @@ export default function Home() {
             <UpdatePassword onComplete={() => setIsRecoveringPassword(false)} />
           </section>
         ) : (
-          <div className="w-full flex flex-col items-center gap-12">
+          <div className="w-full flex flex-col items-center gap-8 sm:gap-12">
             {showGuide && (
               <Tutorial onComplete={() => {
                 localStorage.setItem('guideComplete', 'true');
@@ -182,7 +187,7 @@ export default function Home() {
               <FileUpload onSuccess={() => setRefreshKey(prev => prev + 1)} session={session} />
             </section>
 
-            <section className="w-full z-10">
+            <section className="w-full z-10 -mt-4 sm:-mt-6">
               <EventDashboard refreshKey={refreshKey} session={session} />
             </section>
           </div>

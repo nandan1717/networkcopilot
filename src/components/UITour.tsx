@@ -72,17 +72,21 @@ export function UITour({ onComplete }: { onComplete: () => void }) {
 
     // Calculate Popover Position
     let popoverStyle: React.CSSProperties = {};
-    const margin = 16;
+    const margin = 12;
+    const popoverWidth = typeof window !== 'undefined' && window.innerWidth < 640 ? 280 : 320;
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
 
     if (step.position === 'bottom') {
+        const idealLeft = targetRect.left + (targetRect.width / 2) - (popoverWidth / 2);
         popoverStyle = {
             top: targetRect.bottom + margin,
-            left: Math.max(margin, targetRect.left + (targetRect.width / 2) - 150),
+            left: Math.min(Math.max(margin, idealLeft), viewportWidth - popoverWidth - margin),
         };
     } else if (step.position === 'top') {
+        const idealLeft = targetRect.left + (targetRect.width / 2) - (popoverWidth / 2);
         popoverStyle = {
-            top: targetRect.top - margin - 150, // rough height estimate
-            left: Math.max(margin, targetRect.left + (targetRect.width / 2) - 150),
+            top: targetRect.top - margin - 150,
+            left: Math.min(Math.max(margin, idealLeft), viewportWidth - popoverWidth - margin),
         };
     }
 
@@ -114,9 +118,8 @@ export function UITour({ onComplete }: { onComplete: () => void }) {
                 }}
             />
 
-            {/* The Tooltip Popover */}
             <div
-                className="absolute w-[320px] bg-gradient-to-b from-gray-900/90 to-black/90 backdrop-blur-xl border border-white/10 p-6 rounded-[24px] shadow-2xl pointer-events-auto transition-all duration-500 ease-out z-[102] animate-in fade-in zoom-in-95 overflow-hidden"
+                className="absolute w-[280px] sm:w-[320px] bg-gradient-to-b from-gray-900/90 to-black/90 backdrop-blur-xl border border-white/10 p-4 sm:p-6 rounded-[20px] sm:rounded-[24px] shadow-2xl pointer-events-auto transition-all duration-500 ease-out z-[102] animate-in fade-in zoom-in-95 overflow-hidden"
                 style={popoverStyle}
             >
                 {/* Subtle internal glow */}

@@ -104,7 +104,7 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
                 onDrop={onDrop}
             >
                 {/* Drag & Drop Zone Context */}
-                <div className="p-8">
+                <div className="p-4 sm:p-8">
                     <input type="file" accept=".pdf" multiple className="hidden" id="file-upload" onChange={onChange} disabled={status === 'uploading' || status === 'processing'} />
                     <label htmlFor="file-upload" className="flex flex-col items-center justify-center cursor-pointer space-y-4">
                         {status === 'idle' || status === 'error' ? (
@@ -142,7 +142,7 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
                         value={customPrompt}
                         onChange={(e) => setCustomPrompt(e.target.value)}
                         placeholder="Customize your networking goals... (e.g. 'I am looking for early-stage AI startups hiring founding engineers.')"
-                        className="w-full bg-transparent border-none focus:ring-0 p-4 pl-14 text-sm text-gray-300 placeholder:text-gray-500 outline-none resize-none transition-all h-20"
+                        className="w-full bg-transparent border-none focus:ring-0 p-4 pl-14 text-sm text-gray-300 placeholder:text-gray-500 outline-none resize-none transition-all h-16 sm:h-20"
                         disabled={status === 'uploading' || status === 'processing'}
                     />
                 </div>
@@ -164,7 +164,7 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
                     </div>
                     <button
                         onClick={processFiles}
-                        className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-4 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-base"
+                        className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-bold py-3 sm:py-4 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-sm sm:text-base"
                     >
                         Initialize AI Matching Engine
                     </button>

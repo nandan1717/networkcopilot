@@ -57,7 +57,7 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
 
     return (
         <div className="w-full max-w-md mx-auto animate-in fade-in zoom-in duration-500">
-            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden">
                 {/* Decorative glows */}
                 <div className="absolute -top-20 -left-20 w-40 h-40 bg-emerald-500/20 rounded-full blur-[80px]"></div>
                 <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-emerald-900/40 rounded-full blur-[80px]"></div>

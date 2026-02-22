@@ -61,8 +61,8 @@ export function EventDashboard({ refreshKey, session }: { refreshKey: number, se
 
     if (loading) {
         return (
-            <div className="mt-12 space-y-4">
-                <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <div className="mt-8 sm:mt-12 space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                     <Briefcase className="w-6 h-6 text-emerald-400" />
                     Your Recommended Events
                 </h2>
@@ -75,8 +75,8 @@ export function EventDashboard({ refreshKey, session }: { refreshKey: number, se
 
     if (errorMsg || events.length === 0) {
         return (
-            <div className="mt-12 space-y-4">
-                <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <div className="mt-8 sm:mt-12 space-y-4">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                     <Briefcase className="w-6 h-6 text-emerald-400" />
                     Your Recommended Events
                 </h2>
@@ -98,30 +98,26 @@ export function EventDashboard({ refreshKey, session }: { refreshKey: number, se
     const latestContext = events[0]?.ai_context;
 
     return (
-        <div className="mt-12 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="mt-4 sm:mt-6 space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
 
-            {/* AI Context Banner */}
+            {/* AI Context Line */}
             {latestContext && (
-                <div className="mb-10 bg-gradient-to-r from-emerald-900/20 to-teal-900/20 border border-emerald-500/20 rounded-2xl p-6 shadow-lg backdrop-blur-md">
-                    <h3 className="text-sm uppercase tracking-widest font-bold text-emerald-400 mb-3 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        AI Match Context
-                    </h3>
-                    <p className="text-gray-300 leading-relaxed text-[15px]">
-                        Based on your profile, we extracted a GPA of <span className="text-emerald-400 font-bold">{latestContext.gpa || "N/A"}</span> and core skills in <span className="text-emerald-400 font-bold">{(latestContext.skills || []).join(", ") || "various disciplines"}</span>.
-                        {latestContext.customPrompt && latestContext.customPrompt !== "Standard Engine Match (No Override)" && (
-                            <> You also added the following custom matching instructions: <span className="text-emerald-400 font-bold italic">"{latestContext.customPrompt}"</span>.</>
-                        )}
-                        {" "}We used this context to search for and curate the personalized networking events below.
-                    </p>
-                </div>
+                <p className="text-xs sm:text-sm text-gray-500 italic leading-relaxed">
+                    AI matched using: GPA <span className="text-gray-400 not-italic font-medium">{latestContext.gpa || "N/A"}</span>
+                    {(latestContext.skills || []).length > 0 && (
+                        <> · Skills: <span className="text-gray-400 not-italic">{(latestContext.skills || []).join(", ")}</span></>
+                    )}
+                    {latestContext.customPrompt && latestContext.customPrompt !== "Standard Engine Match (No Override)" && (
+                        <> · Prompt: <span className="text-gray-400 not-italic">"{latestContext.customPrompt}"</span></>
+                    )}
+                </p>
             )}
 
-            <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                 <Briefcase className="w-6 h-6 text-emerald-400" />
                 Your Recommended Events
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {events.map((ev) => (
                     <EventCard key={ev.id} ev={ev} />
                 ))}
@@ -145,7 +141,7 @@ function EventCard({ ev }: { ev: MatchedEvent }) {
                     style={{ backfaceVisibility: 'hidden' }}
                 >
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative h-full bg-[#0d1017] rounded-[15px] p-6 flex flex-col pt-8 border border-white/5">
+                    <div className="relative h-full bg-[#0d1017] rounded-[15px] p-4 sm:p-6 flex flex-col pt-6 sm:pt-8 border border-white/5">
                         <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-10 transition-opacity text-emerald-500">
                             <Calendar className="w-24 h-24 transform translate-x-4 -translate-y-4" />
                         </div>
@@ -155,7 +151,7 @@ function EventCard({ ev }: { ev: MatchedEvent }) {
                                     {ev.source}
                                 </span>
                             )}
-                            <h3 className="text-xl font-semibold text-white leading-tight">{ev.eventName}</h3>
+                            <h3 className="text-lg sm:text-xl font-semibold text-white leading-tight">{ev.eventName}</h3>
                         </div>
                         {ev.description && (
                             <p className="text-sm text-gray-400 mb-4 line-clamp-3 leading-relaxed">
@@ -196,7 +192,7 @@ function EventCard({ ev }: { ev: MatchedEvent }) {
                     className="absolute inset-0 w-full h-full overflow-hidden rounded-2xl bg-gradient-to-b from-emerald-900/50 to-gray-900/90 p-[1px] shadow-xl"
                     style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                 >
-                    <div className="relative h-full bg-[#0d1017] rounded-[15px] p-6 flex flex-col pt-8 border border-white/5">
+                    <div className="relative h-full bg-[#0d1017] rounded-[15px] p-4 sm:p-6 flex flex-col pt-6 sm:pt-8 border border-white/5">
                         <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
                             <h3 className="text-lg font-bold text-white leading-tight truncate pr-4">Event Overview</h3>
                             <button

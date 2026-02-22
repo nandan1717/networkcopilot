@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { X, User, Briefcase, GraduationCap, Code2, Award, MapPin, Mail, Phone, Linkedin, Github, Globe, HeartHandshake, FolderGit2, RefreshCw, FileText } from 'lucide-react';
+import { X, User, Briefcase, GraduationCap, Code2, Award, MapPin, Mail, Phone, Linkedin, Github, Globe, HeartHandshake, FolderGit2, RefreshCw, FileText, LogOut } from 'lucide-react';
 
 type UserProfileData = {
     name?: string;
@@ -136,7 +136,7 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 md:p-6 animate-in fade-in duration-300">
             {/* Backdrop */}
             <div
                 className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
@@ -144,12 +144,12 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
             />
 
             {/* Modal */}
-            <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl bg-gradient-to-b from-gray-900/90 to-black/90 border border-white/10 shadow-2xl animate-in zoom-in-95 duration-500 hide-scrollbar">
+            <div className="relative w-full h-full sm:h-auto sm:max-h-[90vh] sm:max-w-3xl overflow-y-auto sm:rounded-3xl bg-gradient-to-b from-gray-900/90 to-black/90 border-0 sm:border border-white/10 shadow-2xl animate-in zoom-in-95 duration-500 hide-scrollbar safe-bottom">
 
                 {/* Close Button */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/20 hover:bg-white/10 text-gray-400 hover:text-white transition-colors border border-white/5"
+                    className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 p-2 rounded-full bg-black/20 hover:bg-white/10 text-gray-400 hover:text-white transition-colors border border-white/5"
                 >
                     <X className="w-5 h-5" />
                 </button>
@@ -180,21 +180,31 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                 ) : (
                     <>
                         {/* Header Banner */}
-                        <div className="h-32 bg-gradient-to-r from-emerald-600/30 to-teal-900/30 border-b border-white/5 relative">
-                            <div className="absolute -bottom-12 left-8 p-1.5 rounded-full bg-[#050505]">
-                                <div className="w-24 h-24 rounded-full bg-emerald-500/20 flex items-center justify-center border-2 border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-                                    <User className="w-12 h-12 text-emerald-400" />
+                        <div className="h-24 sm:h-32 bg-gradient-to-r from-emerald-600/30 to-teal-900/30 border-b border-white/5 relative">
+                            <div className="absolute -bottom-10 sm:-bottom-12 left-4 sm:left-8 p-1 sm:p-1.5 rounded-full bg-[#050505]">
+                                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                                    {profile.avatar_url ? (
+                                        <img
+                                            src={profile.avatar_url}
+                                            alt={profile.name || 'Profile'}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-emerald-500/20 flex items-center justify-center">
+                                            <User className="w-12 h-12 text-emerald-400" />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="px-8 pt-16 pb-8 space-y-10">
+                        <div className="px-4 sm:px-8 pt-14 sm:pt-16 pb-6 sm:pb-8 space-y-6 sm:space-y-10">
                             {/* Intro Section */}
                             <div>
-                                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-2">
-                                    <h2 className="text-3xl font-extrabold text-white tracking-tight">{profile.name || session.user.email}</h2>
+                                <div className="flex flex-col gap-3 sm:gap-4 mb-2">
+                                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{profile.name || session.user.email}</h2>
 
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex flex-wrap items-center gap-2">
                                         <div className="flex items-center p-1 bg-black/40 border border-white/5 rounded-full">
                                             <button
                                                 onClick={() => setViewMode('profile')}
@@ -230,7 +240,7 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-gray-300 leading-relaxed text-[15px] max-w-4xl">{highlightNumbers(profile.summary)}</p>
+                                <p className="text-gray-300 leading-relaxed text-sm sm:text-[15px] max-w-4xl">{highlightNumbers(profile.summary)}</p>
                             </div>
 
                             {viewMode === 'resume' ? (
@@ -252,7 +262,7 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                                 <>
                                     {/* Contact Info Bar */}
                                     {profile.contact && Object.keys(profile.contact).length > 0 && (
-                                        <div className="flex flex-wrap gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 animate-in slide-in-from-bottom-2 duration-300">
+                                        <div className="flex flex-wrap gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/5 animate-in slide-in-from-bottom-2 duration-300">
                                             {profile.contact.email && (
                                                 <a href={`mailto:${profile.contact.email}`} className="flex items-center gap-2 text-sm text-gray-400 hover:text-emerald-400 transition-colors">
                                                     <Mail className="w-4 h-4" /> {profile.contact.email}
@@ -281,10 +291,10 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                                         </div>
                                     )}
 
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                    <div className="grid grid-cols-1 gap-6 sm:gap-8">
                                         {/* Left Column: Skills, Education, Volunteer */}
-                                        <div className="space-y-8">
-                                            <div className="bg-white/5 p-5 rounded-2xl border border-white/5">
+                                        <div className="space-y-6 sm:space-y-8">
+                                            <div className="bg-white/5 p-4 sm:p-5 rounded-2xl border border-white/5">
                                                 <h3 className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-4 flex items-center gap-2">
                                                     <Code2 className="w-4 h-4 text-emerald-500" /> Core Skills
                                                 </h3>
@@ -298,7 +308,7 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                                             </div>
 
                                             {/* Education section */}
-                                            <div className="bg-white/5 p-5 rounded-2xl border border-white/5">
+                                            <div className="bg-white/5 p-4 sm:p-5 rounded-2xl border border-white/5">
                                                 <div className="flex items-center justify-between mb-5">
                                                     <h3 className="text-xs uppercase tracking-widest font-bold text-gray-400 flex items-center gap-2">
                                                         <GraduationCap className="w-4 h-4 text-emerald-500" /> Education
@@ -329,7 +339,7 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
 
                                             {/* Volunteer section */}
                                             {profile.volunteer.length > 0 && (
-                                                <div className="bg-white/5 p-5 rounded-2xl border border-white/5">
+                                                <div className="bg-white/5 p-4 sm:p-5 rounded-2xl border border-white/5">
                                                     <h3 className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-5 flex items-center gap-2">
                                                         <HeartHandshake className="w-4 h-4 text-emerald-500" /> Volunteer Experience
                                                     </h3>
@@ -352,8 +362,8 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                                         </div>
 
                                         {/* Right Column: Experience & Projects */}
-                                        <div className="space-y-8">
-                                            <div className="bg-white/5 p-5 rounded-2xl border border-white/5">
+                                        <div className="space-y-6 sm:space-y-8">
+                                            <div className="bg-white/5 p-4 sm:p-5 rounded-2xl border border-white/5">
                                                 <h3 className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-5 flex items-center gap-2">
                                                     <Briefcase className="w-4 h-4 text-emerald-500" /> Extracted Experience
                                                 </h3>
@@ -385,7 +395,7 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
 
                                             {/* Projects section */}
                                             {profile.projects.length > 0 && (
-                                                <div className="bg-white/5 p-5 rounded-2xl border border-white/5">
+                                                <div className="bg-white/5 p-4 sm:p-5 rounded-2xl border border-white/5">
                                                     <h3 className="text-xs uppercase tracking-widest font-bold text-gray-400 mb-5 flex items-center gap-2">
                                                         <FolderGit2 className="w-4 h-4 text-emerald-500" /> Notable Projects
                                                     </h3>
@@ -421,6 +431,16 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                                     </div>
                                 </>
                             )}
+                            {/* Sign Out Button */}
+                            <div className="pt-6 border-t border-white/5">
+                                <button
+                                    onClick={() => supabase.auth.signOut()}
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 hover:border-red-500/30 font-medium text-sm transition-all"
+                                >
+                                    <LogOut className="w-4 h-4" />
+                                    Sign Out
+                                </button>
+                            </div>
                         </div>
                     </>
                 )}
