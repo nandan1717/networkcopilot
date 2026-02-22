@@ -39,7 +39,7 @@ export default function Home() {
       url.searchParams.delete('code');
       window.history.replaceState({}, '', url.pathname + url.search);
 
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }: { error: any }) => {
         if (error) {
           console.error('Error exchanging code for session:', error.message);
         }
@@ -49,13 +49,13 @@ export default function Home() {
 
     const loadProfileData = (userId: string) => {
       supabase.from('user_profiles').select('name, avatar_url').eq('id', userId).single()
-        .then(({ data }) => {
+        .then(({ data }: { data: any }) => {
           if (data?.name) setProfileName(data.name.split(' ')[0]); // Grab first name
           if (data?.avatar_url) setProfileAvatar(data.avatar_url);
         });
     };
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: any } }) => {
       setSession(session);
       if (session?.user?.id) {
         loadProfileData(session.user.id);
@@ -65,7 +65,7 @@ export default function Home() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       setSession(session);
       if (session?.user?.id) {
         loadProfileData(session.user.id);
