@@ -1,16 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
-// This route receives the PKCE `code` from Supabase's password-reset email.
-// It forwards the code to the home page as a query param so the client-side
-// Supabase client can exchange it for a session and fire PASSWORD_RECOVERY.
 export async function GET(request: NextRequest) {
     const requestUrl = new URL(request.url)
     const code = requestUrl.searchParams.get('code')
 
-    const redirectUrl = new URL('/', requestUrl.origin)
     if (code) {
-        redirectUrl.searchParams.set('code', code)
+        const response = NextResponse.redirect(new URL('/', requestUrl.origin))
+
+        const supabase = createServerClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            {
+                cookies: {
+                    getAll() {
+                        return request.cookies.getAll()
+                    },
+                    setAll(cookiesToSet) {
+                        cookiesToSet.forEach(({ name, value, options }) => {
+                            response.cookies.set(name, value, options)
+                        })
+                    },
+                },
+            }
+        )
+
+        await supabase.auth.exchangeCodeForSession(code)
+        return response
     }
 
-    return NextResponse.redirect(redirectUrl)
+    return NextResponse.redirect(new URL('/', requestUrl.origin))
 }
