@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Calendar, MapPin, Briefcase } from 'lucide-react';
+import { Calendar, MapPin, Briefcase, ChevronDown, Clock } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 type MatchedEvent = {
@@ -22,10 +22,52 @@ type MatchedEvent = {
     created_at: string;
 }
 
+type EventBatch = {
+    batchTime: Date;
+    events: MatchedEvent[];
+}
+
+/** Group events into batches — events within 2 minutes of each other belong to the same batch */
+function groupIntoBatches(events: MatchedEvent[]): EventBatch[] {
+    if (events.length === 0) return [];
+    const sorted = [...events].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    const batches: EventBatch[] = [];
+    let currentBatch: MatchedEvent[] = [sorted[0]];
+    let currentTime = new Date(sorted[0].created_at).getTime();
+
+    for (let i = 1; i < sorted.length; i++) {
+        const evTime = new Date(sorted[i].created_at).getTime();
+        if (currentTime - evTime <= 2 * 60 * 1000) {
+            currentBatch.push(sorted[i]);
+        } else {
+            batches.push({ batchTime: new Date(currentTime), events: currentBatch });
+            currentBatch = [sorted[i]];
+            currentTime = evTime;
+        }
+    }
+    batches.push({ batchTime: new Date(currentTime), events: currentBatch });
+    return batches;
+}
+
+/** Friendly relative time label */
+function formatRelativeTime(date: Date): string {
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return 'Just now';
+    if (diffMin < 60) return `${diffMin} minute${diffMin === 1 ? '' : 's'} ago`;
+    const diffHr = Math.floor(diffMin / 60);
+    if (diffHr < 24) return `${diffHr} hour${diffHr === 1 ? '' : 's'} ago`;
+    const diffDay = Math.floor(diffHr / 24);
+    if (diffDay < 30) return `${diffDay} day${diffDay === 1 ? '' : 's'} ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 export function EventDashboard({ refreshKey, session }: { refreshKey: number, session: any }) {
     const [events, setEvents] = useState<MatchedEvent[]>([]);
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
+    const [historyOpen, setHistoryOpen] = useState(false);
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -43,7 +85,7 @@ export function EventDashboard({ refreshKey, session }: { refreshKey: number, se
                     .from('matched_events')
                     .select('*')
                     .order('created_at', { ascending: false })
-                    .limit(12);
+                    .limit(50);
 
                 if (error) {
                     setErrorMsg(error.message);
@@ -95,7 +137,10 @@ export function EventDashboard({ refreshKey, session }: { refreshKey: number, se
         );
     }
 
-    const latestContext = events[0]?.ai_context;
+    const batches = groupIntoBatches(events);
+    const latestBatch = batches[0];
+    const historyBatches = batches.slice(1);
+    const latestContext = latestBatch?.events[0]?.ai_context;
 
     return (
         <div className="mt-4 sm:mt-6 space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -113,15 +158,61 @@ export function EventDashboard({ refreshKey, session }: { refreshKey: number, se
                 </p>
             )}
 
+            {/* Latest Batch */}
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                 <Briefcase className="w-6 h-6 text-emerald-400" />
                 Your Recommended Events
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {events.map((ev) => (
+                {latestBatch.events.map((ev) => (
                     <EventCard key={ev.id} ev={ev} />
                 ))}
             </div>
+
+            {/* History Section */}
+            {historyBatches.length > 0 && (
+                <div className="mt-8 sm:mt-12 pt-6 border-t border-white/5">
+                    <button
+                        onClick={() => setHistoryOpen(!historyOpen)}
+                        className="w-full flex items-center justify-between group cursor-pointer"
+                    >
+                        <h2 className="text-lg sm:text-xl font-bold tracking-tight text-gray-400 flex items-center gap-2">
+                            <Clock className="w-5 h-5 text-gray-500" />
+                            History
+                            <span className="text-sm font-normal text-gray-600 ml-1">
+                                ({historyBatches.reduce((sum, b) => sum + b.events.length, 0)} events)
+                            </span>
+                        </h2>
+                        <ChevronDown
+                            className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${historyOpen ? 'rotate-180' : ''}`}
+                        />
+                    </button>
+
+                    {historyOpen && (
+                        <div className="mt-6 space-y-8 animate-in fade-in slide-in-from-top-2 duration-500">
+                            {historyBatches.map((batch, i) => (
+                                <div key={i}>
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="h-px flex-1 bg-white/5" />
+                                        <span className="text-xs text-gray-500 font-medium uppercase tracking-wider whitespace-nowrap">
+                                            Generated {formatRelativeTime(batch.batchTime)}
+                                        </span>
+                                        <div className="h-px flex-1 bg-white/5" />
+                                    </div>
+                                    <div
+                                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+                                        style={{ filter: 'grayscale(100%)', opacity: 0.55 }}
+                                    >
+                                        {batch.events.map((ev) => (
+                                            <EventCard key={ev.id} ev={ev} />
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

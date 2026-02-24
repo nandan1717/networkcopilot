@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,10 +12,94 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const BASE_URL = "https://networkcopilot.vercel.app";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
-  title: "Networking Co-Pilot",
-  description: "AI-powered resume analysis and networking event matching for tech professionals.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "Networking Co-Pilot — AI-Powered Event Matching for Tech Pros",
+    template: "%s | Networking Co-Pilot",
+  },
+  description:
+    "Upload your resume and let AI match you with the best professional networking events in your area. Get custom pitches, skill analysis, and event recommendations tailored to your career.",
+  keywords: [
+    "networking events",
+    "resume analysis",
+    "AI career tools",
+    "professional networking",
+    "tech events",
+    "event matching",
+    "career development",
+    "networking co-pilot",
+    "skill matching",
+    "custom pitches",
+  ],
+  authors: [{ name: "Networking Co-Pilot" }],
+  creator: "Networking Co-Pilot",
+  publisher: "Networking Co-Pilot",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: BASE_URL,
+    siteName: "Networking Co-Pilot",
+    title: "Networking Co-Pilot — AI-Powered Event Matching for Tech Pros",
+    description:
+      "Upload your resume and let AI match you with the best professional networking events. Get custom pitches and event recommendations tailored to your career.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Networking Co-Pilot — AI-Powered Event Matching",
+    description:
+      "Upload your resume, get matched with relevant networking events, and receive custom pitches powered by AI.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Networking Co-Pilot",
+  url: BASE_URL,
+  description:
+    "AI-powered resume analysis and networking event matching for tech professionals. Upload your resume, get matched with relevant events, and receive custom pitches.",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  featureList: [
+    "AI Resume & Transcript Analysis",
+    "Skill Extraction & Matching",
+    "Professional Networking Event Discovery",
+    "Custom Pitch Generation",
+    "Event Recommendations by Location",
+  ],
+  audience: {
+    "@type": "Audience",
+    audienceType: "Tech Professionals, Job Seekers, Career Networkers",
+  },
 };
 
 export default function RootLayout({
@@ -25,6 +109,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
