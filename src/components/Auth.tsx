@@ -1,8 +1,8 @@
-'use client';
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Mail, Lock, Loader2, UserPlus, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { TermsModal } from './TermsModal';
 
 export function Auth({ onLogin }: { onLogin: () => void }) {
     const [mode, setMode] = useState<'signin' | 'signup' | 'forgot_password'>('signin');
@@ -12,20 +12,41 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
     const [googleLoading, setGoogleLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
+    const [showTerms, setShowTerms] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (mode === 'signup' && !acceptedTerms) {
+            setErrorMsg('Please accept the Terms of Service to create an account.');
+            setShowTerms(true);
+            return;
+        }
+
         setLoading(true);
         setErrorMsg('');
         setSuccessMsg('');
 
         try {
             if (mode === 'signup') {
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
+                    options: {
+                        data: {
+                            terms_accepted: true,
+                        }
+                    }
                 });
                 if (error) throw error;
+                if (data.user) {
+                    await supabase.from('user_profiles').upsert({
+                        id: data.user.id,
+                        terms_accepted: true,
+                        consent_date: new Date().toISOString(),
+                    });
+                }
             } else if (mode === 'signin') {
                 const { error } = await supabase.auth.signInWithPassword({
                     email,
@@ -57,6 +78,12 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
     };
 
     const handleGoogleLogin = async () => {
+        if (mode === 'signup' && !acceptedTerms) {
+            setErrorMsg('Please accept the Terms of Service to create an account.');
+            setShowTerms(true);
+            return;
+        }
+
         setGoogleLoading(true);
         setErrorMsg('');
         setSuccessMsg('');
@@ -64,7 +91,7 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/api/auth/callback`,
+                    redirectTo: `${window.location.origin}/api/auth/callback?terms_accepted=${acceptedTerms}`,
                 },
             });
             if (error) throw error;
@@ -168,6 +195,26 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
                                     />
                                 </div>
                             )}
+
+                            {mode === 'signup' && (
+                                <div className="flex items-start gap-3 pt-2">
+                                    <div className="flex items-center h-5 mt-0.5">
+                                        <input
+                                            id="terms"
+                                            type="checkbox"
+                                            checked={acceptedTerms}
+                                            onChange={(e) => {
+                                                setAcceptedTerms(e.target.checked);
+                                                if (e.target.checked) setErrorMsg('');
+                                            }}
+                                            className="w-4 h-4 rounded border-gray-600 bg-black/20 text-emerald-500 focus:ring-emerald-500/50 focus:ring-offset-slate-900 cursor-pointer"
+                                        />
+                                    </div>
+                                    <label htmlFor="terms" className="text-sm text-gray-400 cursor-pointer">
+                                        I agree to the <button type="button" onClick={() => setShowTerms(true)} className="text-emerald-400 hover:text-emerald-300 hover:underline transition-colors">Terms of Service and Privacy Consent</button>
+                                    </label>
+                                </div>
+                            )}
                         </div>
 
                         {errorMsg && (
@@ -183,10 +230,10 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
 
                         <button
                             type="submit"
-                            disabled={loading}
+                            disabled={loading || (mode === 'signup' && !acceptedTerms)}
                             className={cn(
                                 "w-full py-3 px-4 rounded-xl flex items-center justify-center font-semibold transition-all duration-300",
-                                loading
+                                (loading || (mode === 'signup' && !acceptedTerms))
                                     ? "bg-emerald-500/50 text-white/50 cursor-not-allowed"
                                     : "bg-emerald-500 hover:bg-emerald-400 text-slate-900 shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] active:scale-[0.98]"
                             )}
@@ -230,6 +277,16 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
                     </div>
                 </div>
             </div>
+
+            <TermsModal
+                isOpen={showTerms}
+                onClose={() => setShowTerms(false)}
+                onAccept={() => {
+                    setAcceptedTerms(true);
+                    setErrorMsg('');
+                }}
+                onDecline={() => setAcceptedTerms(false)}
+            />
         </div>
     );
 }

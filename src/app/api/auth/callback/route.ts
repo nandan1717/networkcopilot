@@ -5,6 +5,8 @@ export async function GET(request: NextRequest) {
     const requestUrl = new URL(request.url)
     const code = requestUrl.searchParams.get('code')
 
+    const termsAccepted = requestUrl.searchParams.get('terms_accepted')
+
     if (code) {
         const response = NextResponse.redirect(new URL('/', requestUrl.origin))
 
@@ -25,7 +27,16 @@ export async function GET(request: NextRequest) {
             }
         )
 
-        await supabase.auth.exchangeCodeForSession(code)
+        const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code)
+
+        if (!error && session?.user && termsAccepted === 'true') {
+            await supabase.from('user_profiles').upsert({
+                id: session.user.id,
+                terms_accepted: true,
+                consent_date: new Date().toISOString()
+            })
+        }
+
         return response
     }
 
