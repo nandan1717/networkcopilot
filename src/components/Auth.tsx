@@ -110,8 +110,8 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
 
                 <div className="relative z-10">
                     <div className="text-center mb-8">
-                        <div className="inline-flex items-center justify-center p-3 rounded-full bg-emerald-500/10 mb-4">
-                            {mode === 'signup' ? <UserPlus className="w-6 h-6 text-emerald-400" /> : <LogIn className="w-6 h-6 text-emerald-400" />}
+                        <div className="flex justify-center mb-4">
+                            <img src="/icon.png?v=3" alt="Networking Co-Pilot Logo" className="w-16 h-16 object-contain filter drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
                         </div>
                         <h2 className="text-2xl font-bold tracking-tight text-white mb-2">
                             {mode === 'signup' ? 'Create an Account' : mode === 'forgot_password' ? 'Reset Password' : 'Welcome Back'}

@@ -97,52 +97,59 @@ export default function Home() {
       <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-900/20 blur-[120px] pointer-events-none"></div>
       <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-800/10 blur-[120px] pointer-events-none"></div>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-16 md:py-32 relative z-10 flex flex-col items-center safe-top">
+      <main className={`max-w-5xl mx-auto px-4 sm:px-6 relative z-10 flex flex-col items-center safe-top ${session ? 'py-16 md:py-32' : 'min-h-screen justify-center'}`}>
         {session && (
-          <div className="absolute top-4 sm:top-8 right-4 sm:right-6 flex items-center gap-2 sm:gap-3 z-50">
-            <button
-              onClick={() => {
-                localStorage.removeItem('guideComplete');
-                localStorage.removeItem('tourComplete');
-                setShowGuide(true);
-              }}
-              className="flex items-center gap-1.5 sm:gap-2 text-gray-500 hover:text-emerald-400 transition-colors bg-white/5 border border-white/5 hover:bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium"
-            >
-              <HelpCircle className="w-4 h-4" />
-              Help
-            </button>
-            <button
-              id="tour-profile-btn"
-              onClick={() => setIsProfileOpen(true)}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 shadow-lg shadow-black/20"
-            >
-              {profileAvatar ? (
-                <img
-                  src={profileAvatar}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center">
-                  <User className="w-5 h-5 text-white/80" />
-                </div>
-              )}
-            </button>
+          <div className="w-full flex items-center justify-center relative pt-4 sm:pt-8 mb-4 pointer-events-none">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald-400 text-xs sm:text-sm font-medium tracking-wide shadow-lg shadow-emerald-900/20 pointer-events-auto">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              {profileName ? `Welcome back, ${profileName}` : 'Welcome AI Networker'}
+            </div>
+            <div className="absolute right-0 top-4 sm:top-8 flex items-center gap-2 sm:gap-3 z-50 pointer-events-auto">
+              <button
+                onClick={() => {
+                  localStorage.removeItem('guideComplete');
+                  localStorage.removeItem('tourComplete');
+                  setShowGuide(true);
+                }}
+                className="flex items-center gap-1.5 sm:gap-2 text-gray-500 hover:text-emerald-400 transition-colors bg-white/5 border border-white/5 hover:bg-white/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium"
+              >
+                <HelpCircle className="w-4 h-4" />
+                Help
+              </button>
+              <button
+                id="tour-profile-btn"
+                onClick={() => setIsProfileOpen(true)}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-white/10 hover:border-emerald-500/50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 shadow-lg shadow-black/20"
+              >
+                {profileAvatar ? (
+                  <img
+                    src={profileAvatar}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center">
+                    <User className="w-5 h-5 text-white/80" />
+                  </div>
+                )}
+              </button>
+            </div>
           </div>
         )}
 
-        <header className="mb-8 sm:mb-16 text-center w-full max-w-3xl border-b border-white/5 pb-8 sm:pb-12 pt-14 sm:pt-4">
-          <div className="inline-flex items-center justify-center gap-2 mb-4 sm:mb-8 px-3 sm:px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-emerald-400 text-xs sm:text-sm font-medium tracking-wide shadow-lg shadow-emerald-900/20">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            {session ? (profileName ? `Welcome back, ${profileName}` : 'Welcome AI Networker') : 'Global Networking Hub'}
-          </div>
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-4 sm:mb-8 bg-gradient-to-br from-white via-gray-200 to-gray-500 bg-clip-text text-transparent">
-            Networking <span className="text-emerald-500 drop-shadow-lg">Co-Pilot</span>
-          </h1>
-          <p className="text-sm sm:text-lg md:text-xl text-gray-400 font-light leading-relaxed px-2 sm:px-0">
-            Upload your resume or transcript. We'll extract your skills and match you with top professional networking events in your area, complete with custom pitches.
-          </p>
-        </header>
+        {session && (
+          <header className="mb-8 sm:mb-16 text-center w-full max-w-3xl border-b border-white/5 pb-8 sm:pb-12 pt-8 sm:pt-6">
+            <div className="flex justify-center mb-3 sm:mb-4">
+              <img src="/icon.png?v=3" alt="Logo" className="w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
+            </div>
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-4 sm:mb-6 bg-gradient-to-br from-white via-gray-200 to-gray-500 bg-clip-text text-transparent">
+              Networking <span className="text-emerald-500 drop-shadow-lg">Co-Pilot</span>
+            </h1>
+            <p className="text-sm sm:text-lg md:text-xl text-gray-400 font-light leading-relaxed px-2 sm:px-0">
+              Upload your resume. We'll extract your skills and match you with top professional networking events in your area, complete with custom pitches.
+            </p>
+          </header>
+        )}
 
         {loading ? (
           <div className="animate-pulse text-emerald-500 font-medium tracking-widest text-sm uppercase">Loading Authentication...</div>

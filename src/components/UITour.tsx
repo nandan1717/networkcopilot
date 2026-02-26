@@ -14,7 +14,7 @@ const steps: Step[] = [
     {
         targetId: 'tour-upload-zone',
         title: 'Upload Profile',
-        description: 'Drag and drop your resume or transcript here to generate your AI profile.',
+        description: 'Drag and drop your resume here to generate your AI profile.',
         position: 'bottom'
     },
     {

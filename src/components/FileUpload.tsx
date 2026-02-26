@@ -119,7 +119,7 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
 
                         <div className="text-center">
                             <p className="text-sm font-medium text-gray-300 pb-1">
-                                {status === 'idle' && "Drag & Drop PDF Resumes & Transcripts"}
+                                {status === 'idle' && "Drag & Drop PDF Resumes"}
                                 {status === 'uploading' && "Uploading files..."}
                                 {status === 'processing' && "AI is analyzing your profile..."}
                                 {status === 'success' && "Matches Found!"}

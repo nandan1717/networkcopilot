@@ -15,7 +15,7 @@ export function Tutorial({ onComplete }: { onComplete: () => void }) {
         },
         {
             title: "Instant Profile Generation",
-            description: "Just drag & drop your resume or transcript. Our AI instantly extracts your core skills, experiences, and career trajectory.",
+            description: "Just drag & drop your resume. Our AI instantly extracts your core skills, experiences, and career trajectory.",
             icon: <Bot className="w-12 h-12 text-teal-400" />,
             glow: "bg-teal-500/20"
         },
@@ -65,7 +65,11 @@ export function Tutorial({ onComplete }: { onComplete: () => void }) {
                 {/* Content Area */}
                 <div className="flex-1 flex flex-col items-center justify-center text-center relative z-10 slide-in-from-right-8 animate-in duration-500">
                     <div className="mb-6 sm:mb-8 p-4 sm:p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm shadow-xl inline-flex animate-bounce-subtle">
-                        {steps[currentStep].icon}
+                        {currentStep === 0 ? (
+                            <img src="/icon.png?v=3" alt="Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                        ) : (
+                            steps[currentStep].icon
+                        )}
                     </div>
                     <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-4 sm:mb-6 tracking-tight">
                         {steps[currentStep].title}

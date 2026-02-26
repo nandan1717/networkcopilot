@@ -168,7 +168,7 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
                         </div>
                         <h3 className="text-xl font-bold text-white mb-2">No Profile Found</h3>
                         <p className="text-gray-400 text-sm max-w-sm">
-                            Upload your resume or transcript on the dashboard to automatically generate your AI-powered professional profile!
+                            Upload your resume on the dashboard to automatically generate your AI-powered professional profile!
                         </p>
                         <button
                             onClick={onClose}

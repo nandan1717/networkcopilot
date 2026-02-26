@@ -90,7 +90,7 @@ const jsonLd = {
     priceCurrency: "USD",
   },
   featureList: [
-    "AI Resume & Transcript Analysis",
+    "AI Resume Analysis",
     "Skill Extraction & Matching",
     "Professional Networking Event Discovery",
     "Custom Pitch Generation",

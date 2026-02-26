@@ -127,7 +127,7 @@ export async function POST(req: Request) {
 
         let prompt = `
             You are a senior technical recruiter and resume parser.
-            Analyze the attached PDF documents (resume/transcript).
+            Analyze the attached PDF documents (resume).
             Extract the data exactly into the required JSON format.
             Extract as many deep details as possible for the projects and experiences to make the profile comprehensive.
         `;
