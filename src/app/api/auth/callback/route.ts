@@ -6,6 +6,7 @@ export async function GET(request: NextRequest) {
     const code = requestUrl.searchParams.get('code')
 
     const termsAccepted = requestUrl.searchParams.get('terms_accepted')
+    const newsletter = requestUrl.searchParams.get('newsletter')
 
     if (code) {
         const response = NextResponse.redirect(new URL('/', requestUrl.origin))
@@ -33,7 +34,9 @@ export async function GET(request: NextRequest) {
             await supabase.from('user_profiles').upsert({
                 id: session.user.id,
                 terms_accepted: true,
-                consent_date: new Date().toISOString()
+                consent_date: new Date().toISOString(),
+                newsletter_subscribed: newsletter === 'true',
+                newsletter_subscribed_at: newsletter === 'true' ? new Date().toISOString() : null,
             })
         }
 

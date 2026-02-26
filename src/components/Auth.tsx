@@ -14,6 +14,7 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
     const [successMsg, setSuccessMsg] = useState('');
     const [showTerms, setShowTerms] = useState(false);
     const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [newsletterOptIn, setNewsletterOptIn] = useState(false);
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,6 +46,8 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
                         id: data.user.id,
                         terms_accepted: true,
                         consent_date: new Date().toISOString(),
+                        newsletter_subscribed: newsletterOptIn,
+                        newsletter_subscribed_at: newsletterOptIn ? new Date().toISOString() : null,
                     });
                 }
             } else if (mode === 'signin') {
@@ -91,7 +94,7 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/api/auth/callback?terms_accepted=${acceptedTerms}`,
+                    redirectTo: `${window.location.origin}/api/auth/callback?terms_accepted=${acceptedTerms}&newsletter=${newsletterOptIn}`,
                 },
             });
             if (error) throw error;
@@ -197,23 +200,40 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
                             )}
 
                             {mode === 'signup' && (
-                                <div className="flex items-start gap-3 pt-2">
-                                    <div className="flex items-center h-5 mt-0.5">
-                                        <input
-                                            id="terms"
-                                            type="checkbox"
-                                            checked={acceptedTerms}
-                                            onChange={(e) => {
-                                                setAcceptedTerms(e.target.checked);
-                                                if (e.target.checked) setErrorMsg('');
-                                            }}
-                                            className="w-4 h-4 rounded border-gray-600 bg-black/20 text-emerald-500 focus:ring-emerald-500/50 focus:ring-offset-slate-900 cursor-pointer"
-                                        />
+                                <>
+                                    <div className="flex items-start gap-3 pt-2">
+                                        <div className="flex items-center h-5 mt-0.5">
+                                            <input
+                                                id="terms"
+                                                type="checkbox"
+                                                checked={acceptedTerms}
+                                                onChange={(e) => {
+                                                    setAcceptedTerms(e.target.checked);
+                                                    if (e.target.checked) setErrorMsg('');
+                                                }}
+                                                className="w-4 h-4 rounded border-gray-600 bg-black/20 text-emerald-500 focus:ring-emerald-500/50 focus:ring-offset-slate-900 cursor-pointer"
+                                            />
+                                        </div>
+                                        <label htmlFor="terms" className="text-sm text-gray-400 cursor-pointer">
+                                            I agree to the <button type="button" onClick={() => setShowTerms(true)} className="text-emerald-400 hover:text-emerald-300 hover:underline transition-colors">Terms of Service and Privacy Consent</button>
+                                        </label>
                                     </div>
-                                    <label htmlFor="terms" className="text-sm text-gray-400 cursor-pointer">
-                                        I agree to the <button type="button" onClick={() => setShowTerms(true)} className="text-emerald-400 hover:text-emerald-300 hover:underline transition-colors">Terms of Service and Privacy Consent</button>
-                                    </label>
-                                </div>
+
+                                    <div className="flex items-start gap-3 pt-1">
+                                        <div className="flex items-center h-5 mt-0.5">
+                                            <input
+                                                id="newsletter"
+                                                type="checkbox"
+                                                checked={newsletterOptIn}
+                                                onChange={(e) => setNewsletterOptIn(e.target.checked)}
+                                                className="w-4 h-4 rounded border-gray-600 bg-black/20 text-emerald-500 focus:ring-emerald-500/50 focus:ring-offset-slate-900 cursor-pointer"
+                                            />
+                                        </div>
+                                        <label htmlFor="newsletter" className="text-sm text-gray-400 cursor-pointer">
+                                            Subscribe to our newsletter for event updates and networking tips
+                                        </label>
+                                    </div>
+                                </>
                             )}
                         </div>
 
