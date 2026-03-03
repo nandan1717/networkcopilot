@@ -114,7 +114,7 @@ export function Auth({ onLogin }: { onLogin: () => void }) {
                 <div className="relative z-10">
                     <div className="text-center mb-8">
                         <div className="flex justify-center mb-4">
-                            <img src="/icon.png?v=3" alt="Networking Co-Pilot Logo" className="w-16 h-16 object-contain filter drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
+                            <img src="/icon.png?v=3" alt="Networking Pilot Logo" className="w-16 h-16 object-contain filter drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
                         </div>
                         <h2 className="text-2xl font-bold tracking-tight text-white mb-2">
                             {mode === 'signup' ? 'Create an Account' : mode === 'forgot_password' ? 'Reset Password' : 'Welcome Back'}

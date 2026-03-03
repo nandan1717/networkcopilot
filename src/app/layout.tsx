@@ -24,8 +24,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Networking Co-Pilot — AI-Powered Event Matching for Tech Pros",
-    template: "%s | Networking Co-Pilot",
+    default: "Networking Pilot — AI-Powered Event Matching for Tech Pros",
+    template: "%s | Networking Pilot",
   },
   description:
     "Upload your resume and let AI match you with the best professional networking events in your area. Get custom pitches, skill analysis, and event recommendations tailored to your career.",
@@ -37,25 +37,25 @@ export const metadata: Metadata = {
     "tech events",
     "event matching",
     "career development",
-    "networking co-pilot",
+    "networking pilot",
     "skill matching",
     "custom pitches",
   ],
-  authors: [{ name: "Networking Co-Pilot" }],
-  creator: "Networking Co-Pilot",
-  publisher: "Networking Co-Pilot",
+  authors: [{ name: "Networking Pilot" }],
+  creator: "Networking Pilot",
+  publisher: "Networking Pilot",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: BASE_URL,
-    siteName: "Networking Co-Pilot",
-    title: "Networking Co-Pilot — AI-Powered Event Matching for Tech Pros",
+    siteName: "Networking Pilot",
+    title: "Networking Pilot — AI-Powered Event Matching for Tech Pros",
     description:
       "Upload your resume and let AI match you with the best professional networking events. Get custom pitches and event recommendations tailored to your career.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Networking Co-Pilot — AI-Powered Event Matching",
+    title: "Networking Pilot — AI-Powered Event Matching",
     description:
       "Upload your resume, get matched with relevant networking events, and receive custom pitches powered by AI.",
   },
@@ -78,7 +78,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  name: "Networking Co-Pilot",
+  name: "Networking Pilot",
   url: BASE_URL,
   description:
     "AI-powered resume analysis and networking event matching for tech professionals. Upload your resume, get matched with relevant events, and receive custom pitches.",

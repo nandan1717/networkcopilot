@@ -102,16 +102,27 @@ export function UserProfile({ session, refreshKey, isOpen, onClose }: { session:
     };
 
     const handleSyncProfile = async () => {
-        if (!session?.access_token) return;
         setSyncing(true);
         try {
+            // Fetch a fresh access token to avoid stale token errors
+            const { data: { session: currentSession } } = await supabase.auth.getSession();
+            if (!currentSession?.access_token) {
+                alert('Your session has expired. Please log in again.');
+                return;
+            }
             const res = await fetch('/api/sync', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${session.access_token}`
+                    'Authorization': `Bearer ${currentSession.access_token}`
                 }
             });
-            if (!res.ok) throw new Error('Failed to sync profile');
+            if (!res.ok) {
+                if (res.status === 401) {
+                    alert('Your session has expired. Please log in again.');
+                    return;
+                }
+                throw new Error('Failed to sync profile');
+            }
             // Re-fetch the newly generated profile
             await fetchProfile();
         } catch (error) {

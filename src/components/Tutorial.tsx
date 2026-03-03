@@ -8,7 +8,7 @@ export function Tutorial({ onComplete }: { onComplete: () => void }) {
 
     const steps = [
         {
-            title: "Welcome to Networking Co-Pilot",
+            title: "Welcome to Networking Pilot",
             description: "Your personalized AI strategist. We help you find the exact rooms you need to be in, anywhere in the world.",
             icon: <Sparkles className="w-12 h-12 text-emerald-400" />,
             glow: "bg-emerald-500/20"

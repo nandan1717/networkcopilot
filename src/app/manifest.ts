@@ -2,8 +2,8 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'Networking Co-Pilot',
-        short_name: 'NetCoPilot',
+        name: 'Networking Pilot',
+        short_name: 'NetPilot',
         description:
             'AI-powered resume analysis and networking event matching for tech professionals. Upload your resume, get matched with relevant events, and receive custom pitches.',
         start_url: '/',

@@ -24,12 +24,12 @@ export function TermsModal({ isOpen, onClose, onAccept, onDecline }: TermsModalP
                     <p className="font-medium text-white">Last Updated: February 25, 2026</p>
 
                     <p>
-                        Welcome to Networking Co-Pilot. By clicking "I Accept," you agree to the following Terms and Conditions and consent to our data practices. If you do not agree, you must decline and discontinue use of the application.
+                        Welcome to Networking Pilot. By clicking "I Accept," you agree to the following Terms and Conditions and consent to our data practices. If you do not agree, you must decline and discontinue use of the application.
                     </p>
 
                     <section className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">1. Description of Service</h3>
-                        <p>Networking Co-Pilot is a web-based platform designed to match users with relevant professional events and networking opportunities based on their professional profiles, interests, and stated goals.</p>
+                        <p>Networking Pilot is a web-based platform designed to match users with relevant professional events and networking opportunities based on their professional profiles, interests, and stated goals.</p>
                     </section>
 
                     <section className="space-y-2">
@@ -45,7 +45,7 @@ export function TermsModal({ isOpen, onClose, onAccept, onDecline }: TermsModalP
 
                     <section className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">3. How We Use Your Data (Privacy Consent)</h3>
-                        <p>By using Networking Co-Pilot, you consent to the processing of your data for the following purposes:</p>
+                        <p>By using Networking Pilot, you consent to the processing of your data for the following purposes:</p>
                         <ul className="list-disc pl-5 space-y-2">
                             <li><strong className="text-white">Personalization:</strong> To match you with relevant professional events and contacts.</li>
                             <li><strong className="text-white">Service Improvement:</strong> To analyze aggregate usage trends and improve our matching algorithms.</li>
@@ -55,7 +55,7 @@ export function TermsModal({ isOpen, onClose, onAccept, onDecline }: TermsModalP
 
                     <section className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">4. AI Processing and Third-Party Services</h3>
-                        <p>Networking Co-Pilot utilizes artificial intelligence to analyze your professional profile and generate networking recommendations.</p>
+                        <p>Networking Pilot utilizes artificial intelligence to analyze your professional profile and generate networking recommendations.</p>
                         <ul className="list-disc pl-5 space-y-2">
                             <li><strong className="text-white">Google Gemini API:</strong> Your profile data and queries are processed using Google's Gemini API. By accepting these terms, you consent to this data transfer.</li>
                             <li><strong className="text-white">Data Protection:</strong> We utilize enterprise-tier API endpoints. Your personal data is processed strictly for generating your session results and is not used by Google to train public, global AI models.</li>
@@ -84,7 +84,7 @@ export function TermsModal({ isOpen, onClose, onAccept, onDecline }: TermsModalP
 
                     <section className="space-y-2">
                         <h3 className="text-lg font-semibold text-white">7. Limitation of Liability</h3>
-                        <p>Networking Co-Pilot provides event recommendations and AI-generated networking strategies "as is." We do not guarantee the quality, safety, or outcome of any professional event or connection made through the platform. You attend events and engage with contacts at your own risk.</p>
+                        <p>Networking Pilot provides event recommendations and AI-generated networking strategies "as is." We do not guarantee the quality, safety, or outcome of any professional event or connection made through the platform. You attend events and engage with contacts at your own risk.</p>
                     </section>
 
                     <section className="space-y-2">

@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react';
 import { UploadCloud, FileText, Loader2, CheckCircle2, MessageSquare, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
 
 export function FileUpload({ onSuccess, session }: { onSuccess: () => void, session: any }) {
     const [isHovering, setIsHovering] = useState(false);
@@ -55,11 +56,17 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
             const base64Files = await Promise.all(base64Promises);
             setStatus('processing');
 
+            // Fetch a fresh access token to avoid stale token errors
+            const { data: { session: currentSession } } = await supabase.auth.getSession();
+            if (!currentSession?.access_token) {
+                throw new Error('Your session has expired. Please log in again.');
+            }
+
             const res = await fetch('/api/match', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session?.access_token}`
+                    'Authorization': `Bearer ${currentSession.access_token}`
                 },
                 body: JSON.stringify({
                     files: base64Files,
@@ -71,6 +78,9 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({}));
+                if (res.status === 401) {
+                    throw new Error('Your session has expired. Please log in again.');
+                }
                 throw new Error(errorData.error || 'Failed to process matching engine');
             }
 

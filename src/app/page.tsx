@@ -7,6 +7,8 @@ import { Auth } from '@/components/Auth';
 import { Tutorial } from '@/components/Tutorial';
 import { UITour } from '@/components/UITour';
 import { UpdatePassword } from '@/components/UpdatePassword';
+import { TermsModal } from '@/components/TermsModal';
+import { NewsletterModal } from '@/components/NewsletterModal';
 import { supabase } from '@/lib/supabase';
 import { User, HelpCircle } from 'lucide-react';
 
@@ -17,6 +19,9 @@ export default function Home() {
   const [profileAvatar, setProfileAvatar] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState<boolean | null>(null);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showNewsletterModal, setShowNewsletterModal] = useState(false);
 
 
   // Phase 1: Pre-login modal guide
@@ -51,10 +56,21 @@ export default function Home() {
     }
 
     const loadProfileData = (userId: string) => {
-      supabase.from('user_profiles').select('name, avatar_url').eq('id', userId).single()
+      supabase.from('user_profiles').select('name, avatar_url, terms_accepted, newsletter_subscribed').eq('id', userId).single()
         .then(({ data }: { data: any }) => {
-          if (data?.name) setProfileName(data.name.split(' ')[0]); // Grab first name
+          if (data?.name) setProfileName(data.name.split(' ')[0]);
           if (data?.avatar_url) setProfileAvatar(data.avatar_url);
+          if (data?.terms_accepted) {
+            setTermsAccepted(true);
+          } else {
+            setTermsAccepted(false);
+            setShowTermsModal(true);
+          }
+        })
+        .catch(() => {
+          // No profile row yet — need terms acceptance
+          setTermsAccepted(false);
+          setShowTermsModal(true);
         });
     };
 
@@ -75,6 +91,15 @@ export default function Home() {
       }
       if (event === 'PASSWORD_RECOVERY') {
         setIsRecoveringPassword(true);
+      }
+      // If token refresh failed, session becomes null — sign out gracefully
+      if (event === 'TOKEN_REFRESHED' && !session) {
+        supabase.auth.signOut();
+      }
+      if (event === 'SIGNED_OUT') {
+        setSession(null);
+        setProfileName(null);
+        setProfileAvatar(null);
       }
     });
 
@@ -143,7 +168,7 @@ export default function Home() {
               <img src="/icon.png?v=3" alt="Logo" className="w-10 h-10 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
             </div>
             <h1 className="text-3xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-4 sm:mb-6 bg-gradient-to-br from-white via-gray-200 to-gray-500 bg-clip-text text-transparent">
-              Networking <span className="text-emerald-500 drop-shadow-lg">Co-Pilot</span>
+              Networking <span className="text-emerald-500 drop-shadow-lg">Pilot</span>
             </h1>
             <p className="text-sm sm:text-lg md:text-xl text-gray-400 font-light leading-relaxed px-2 sm:px-0">
               Upload your resume. We'll extract your skills and match you with top professional networking events in your area, complete with custom pitches.
@@ -170,6 +195,47 @@ export default function Home() {
           </section>
         ) : (
           <div className="w-full flex flex-col items-center gap-8 sm:gap-12">
+            {/* Terms of Service check — blocks dashboard until accepted */}
+            <TermsModal
+              isOpen={showTermsModal}
+              onClose={() => { }}
+              onAccept={async () => {
+                if (session?.user?.id) {
+                  await supabase.from('user_profiles').upsert({
+                    id: session.user.id,
+                    terms_accepted: true,
+                    consent_date: new Date().toISOString(),
+                  });
+                }
+                setTermsAccepted(true);
+                setShowTermsModal(false);
+                // Show newsletter opt-in as next step
+                setShowNewsletterModal(true);
+              }}
+              onDecline={() => {
+                supabase.auth.signOut();
+                setShowTermsModal(false);
+              }}
+            />
+
+            {/* Newsletter opt-in — optional, shown after terms acceptance */}
+            <NewsletterModal
+              isOpen={showNewsletterModal}
+              onSubscribe={async () => {
+                if (session?.user?.id) {
+                  await supabase.from('user_profiles').upsert({
+                    id: session.user.id,
+                    newsletter_subscribed: true,
+                    newsletter_subscribed_at: new Date().toISOString(),
+                  });
+                }
+                setShowNewsletterModal(false);
+              }}
+              onSkip={() => {
+                setShowNewsletterModal(false);
+              }}
+            />
+
             {showGuide && (
               <Tutorial onComplete={() => {
                 localStorage.setItem('guideComplete', 'true');
