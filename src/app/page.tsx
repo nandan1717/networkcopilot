@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { FileUpload } from '@/components/FileUpload';
 import { EventDashboard } from '@/components/EventDashboard';
 import { UserProfile } from '@/components/UserProfile';
@@ -9,6 +9,8 @@ import { UITour } from '@/components/UITour';
 import { UpdatePassword } from '@/components/UpdatePassword';
 import { TermsModal } from '@/components/TermsModal';
 import { NewsletterModal } from '@/components/NewsletterModal';
+import { FilterPanel, getDefaultFilters } from '@/components/FilterPanel';
+import type { Filters } from '@/components/FilterPanel';
 import { supabase } from '@/lib/supabase';
 import { User, HelpCircle } from 'lucide-react';
 
@@ -22,6 +24,8 @@ export default function Home() {
   const [termsAccepted, setTermsAccepted] = useState<boolean | null>(null);
   const [showTermsModal, setShowTermsModal] = useState(false);
   const [showNewsletterModal, setShowNewsletterModal] = useState(false);
+  const [filters, setFilters] = useState<Filters>(getDefaultFilters());
+  const [feedback, setFeedback] = useState<Record<string, 'liked' | 'disliked'>>({});
 
 
   // Phase 1: Pre-login modal guide
@@ -256,12 +260,20 @@ export default function Home() {
               onClose={() => setIsProfileOpen(false)}
             />
 
-            <section className="w-full max-w-2xl z-20 relative">
-              <FileUpload onSuccess={() => setRefreshKey(prev => prev + 1)} session={session} />
+            <section className="w-full max-w-2xl z-20 relative space-y-4">
+              <FilterPanel filters={filters} onChange={setFilters} />
+              <FileUpload onSuccess={() => setRefreshKey(prev => prev + 1)} session={session} filters={filters} pitchTone={filters.pitchTone} feedback={feedback} />
             </section>
 
             <section className="w-full z-10 -mt-4 sm:-mt-6">
-              <EventDashboard refreshKey={refreshKey} session={session} />
+              <EventDashboard
+                refreshKey={refreshKey}
+                session={session}
+                feedback={feedback}
+                onFeedbackChange={setFeedback}
+                filters={filters}
+                onRegenerate={() => setRefreshKey(prev => prev + 1)}
+              />
             </section>
           </div>
         )}

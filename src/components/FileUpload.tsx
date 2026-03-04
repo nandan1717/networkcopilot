@@ -1,13 +1,21 @@
 'use client';
-import { useState, useCallback } from 'react';
-import { UploadCloud, FileText, Loader2, CheckCircle2, MessageSquare, X } from 'lucide-react';
+import { useState, useCallback, memo } from 'react';
+import { UploadCloud, FileText, Loader2, CheckCircle2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
+import type { Filters } from './FilterPanel';
 
-export function FileUpload({ onSuccess, session }: { onSuccess: () => void, session: any }) {
+type FileUploadProps = {
+    onSuccess: () => void;
+    session: any;
+    filters?: Filters;
+    pitchTone?: string;
+    feedback?: Record<string, 'liked' | 'disliked'>;
+};
+
+export const FileUpload = memo(function FileUpload({ onSuccess, session, filters, pitchTone, feedback }: FileUploadProps) {
     const [isHovering, setIsHovering] = useState(false);
     const [files, setFiles] = useState<File[]>([]);
-    const [customPrompt, setCustomPrompt] = useState('');
     const [status, setStatus] = useState<'idle' | 'uploading' | 'processing' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -70,9 +78,12 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
                 },
                 body: JSON.stringify({
                     files: base64Files,
-                    customPrompt: customPrompt,
+                    customPrompt: filters?.customPrompt || '',
                     userTimeContext: new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-                    userLocationContext: Intl.DateTimeFormat().resolvedOptions().timeZone
+                    userLocationContext: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    filters: filters || undefined,
+                    pitchTone: pitchTone || undefined,
+                    feedback: feedback || undefined,
                 })
             });
 
@@ -86,7 +97,6 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
 
             setStatus('success');
             setFiles([]);
-            setCustomPrompt('');
             onSuccess();
 
             // Revert back to idle after a few seconds of celebration
@@ -143,19 +153,7 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
                     </label>
                 </div>
 
-                {/* Custom Prompt Context */}
-                <div id="tour-custom-prompt" className="relative group border-t border-white/5 p-2 bg-black/10">
-                    <div className="absolute top-6 left-6 text-emerald-500/50 group-focus-within:text-emerald-400 transition-colors">
-                        <MessageSquare className="w-5 h-5" />
-                    </div>
-                    <textarea
-                        value={customPrompt}
-                        onChange={(e) => setCustomPrompt(e.target.value)}
-                        placeholder="Customize your networking goals... (e.g. 'I am looking for early-stage AI startups hiring founding engineers.')"
-                        className="w-full bg-transparent border-none focus:ring-0 p-4 pl-14 text-sm text-gray-300 placeholder:text-gray-500 outline-none resize-none transition-all h-16 sm:h-20"
-                        disabled={status === 'uploading' || status === 'processing'}
-                    />
-                </div>
+
             </div>
 
             {/* Selected Files List & Action Button - Renders OUTSIDE and BELOW the unified box */}
@@ -182,4 +180,4 @@ export function FileUpload({ onSuccess, session }: { onSuccess: () => void, sess
             )}
         </div>
     );
-}
+});

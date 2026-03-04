@@ -39,7 +39,7 @@ export function TermsModal({ isOpen, onClose, onAccept, onDecline }: TermsModalP
                             <li><strong className="text-white">Account Information:</strong> Name, email address, and authentication data.</li>
                             <li><strong className="text-white">Professional Profile:</strong> Job title, industry, skills, networking goals, and any biographical information you choose to provide.</li>
                             <li><strong className="text-white">Usage Data:</strong> Search queries, event preferences, and interaction history within the application.</li>
-                            <li><strong className="text-white">Location Data:</strong> General location data (e.g., city or region) to recommend geographically relevant events. We do not track precise GPS coordinates without explicit, separate consent.</li>
+                            <li><strong className="text-white">Location Data:</strong> With your permission, we access your device&apos;s GPS/geolocation to determine your city and region. This is used solely to recommend nearby professional events within your chosen radius. You may deny location access at any time through your browser settings; if denied, you can manually enter your city. We do not store precise GPS coordinates — only the resolved city name is retained.</li>
                         </ul>
                     </section>
 
